@@ -25,17 +25,19 @@
 
 		private double[] framerateSamples;
 
-		/// <summary> Initializes the ConsoleGame. Creates the instance of a ConsoleEngine and starts the game loop. </summary>
-		/// <param name="width">Width of the window.</param>
-		/// <param name="height">Height of the window.</param>
-		/// <param name="fontW">Width of the font.</param>
-		/// <param name="fontH">´Height of the font.</param>
-		/// <param name="m">Framerate mode to run at.</param>
-		/// <see cref="FramerateMode"/> <see cref="ConsoleEngine"/>
-		public void Construct(int width, int height, int fontW, int fontH, FramerateMode m) {
-			TargetFramerate = 30;
+        /// <summary> Initializes the ConsoleGame. Creates the instance of a ConsoleEngine and starts the game loop. </summary>
+        /// <param name="width">Width of the window.</param>
+        /// <param name="height">Height of the window.</param>
+        /// <param name="fontW">Width of the font.</param>
+        /// <param name="fontH">´Height of the font.</param>
+        /// <param name="m">Framerate mode to run at.</param>
+        /// <see cref="FramerateMode"/> <see cref="ConsoleEngine"/>
+        //public void Construct(int width, int height, int fontW, int fontH, FramerateMode m, int fontsize = 16, string font = "Consolas") {
+        public void Construct(int width, int height, int fontW, int fontH, FramerateMode m, short? fontSize =null, string fontName = null)
+        {
+            TargetFramerate = 30;
 
-			Engine = new ConsoleEngine(width, height, fontW, fontH);
+			Engine = new ConsoleEngine(width, height, fontW, fontH, fontSize, fontName);
 			Create();
 
 			if (m == FramerateMode.Unlimited) gameThread = new Thread(new ThreadStart(GameLoopUnlimited));

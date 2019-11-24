@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\ConsoleGameEngine.xml</DocumentationFile>
     <RegisterForComInterop>false</RegisterForComInterop>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,7 +56,10 @@
     <Compile Include="ConsoleGame.cs" />
     <Compile Include="ConsoleHelper.cs" />
     <Compile Include="ConsolePalette.cs" />
+    <Compile Include="Coord.cs" />
     <Compile Include="FigletFont.cs" />
+    <Compile Include="GetFontInfo.cs" />
+    <Compile Include="PInvokeConsoleHelper.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility.cs" />

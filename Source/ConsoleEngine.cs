@@ -1,15 +1,56 @@
 ﻿namespace ConsoleGameEngine {
 
 	using System;
-	using System.Text;
+    using System.Runtime.InteropServices;
+    using System.Text;
 
 	/// <summary>
 	/// Class for Drawing to a console window.
 	/// </summary>
 	public class ConsoleEngine {
+        //OBSOLATE, changed to PInvokeConsoleHelper Class
+        // Extendes with /unsafe and code from api example :
+        // https://docs.microsoft.com/en-us/dotnet/api/system.console?redirectedfrom=MSDN&view=netframework-4.8
+        //private const int LF_FACESIZE = 32;
+        //private const int STD_OUTPUT_HANDLE = -11;
+        //private const int TMPF_TRUETYPE = 4;
+        //private static IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
+        //private const string _defaultFONTNAME = "Consolas";
+        //private const int _defaultFONTSIZE = 16;
 
-		// pekare för ConsoleHelper-anrop
-		private readonly IntPtr stdInputHandle = NativeMethods.GetStdHandle(-10);
+
+
+        ////MSDN
+        //[StructLayout(LayoutKind.Sequential)]
+        //internal unsafe struct CONSOLE_FONT_INFO_EX
+        //{
+        //    internal uint cbSize;
+        //    internal uint nFont;
+        //    internal Coord.COORD dwFontSize;
+        //    internal int FontFamily;
+        //    internal int FontWeight;
+        //    internal fixed char FaceName[LF_FACESIZE];
+
+        //}
+        //[DllImport("kernel32.dll", SetLastError = true)]
+        //static extern IntPtr GetStdHandle(int nStdHandle);
+
+
+
+        //[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        //static extern bool GetCurrentConsoleFontEx(
+        //       IntPtr consoleOutput,
+        //       bool maximumWindow,
+        //       ref CONSOLE_FONT_INFO_EX lpConsoleCurrentFontEx);
+
+        //[DllImport("kernel32.dll", SetLastError = true)]
+        //static extern bool SetCurrentConsoleFontEx(
+        //       IntPtr consoleOutput,
+        //       bool maximumWindow,
+        //       CONSOLE_FONT_INFO_EX consoleCurrentFontEx);
+
+        // pekare för ConsoleHelper-anrop
+        private readonly IntPtr stdInputHandle = NativeMethods.GetStdHandle(-10);
 		private readonly IntPtr stdOutputHandle = NativeMethods.GetStdHandle(-11);
 		private readonly IntPtr stdErrorHandle = NativeMethods.GetStdHandle(-12);
 		private readonly IntPtr consoleHandle = NativeMethods.GetConsoleWindow();
@@ -29,24 +70,105 @@
 		private ConsoleBuffer ConsoleBuffer { get; set; }
 		private bool IsBorderless { get; set; }
 
-		/// <summary> Creates a new ConsoleEngine. </summary>
-		/// <param name="width">Target window width.</param>
-		/// <param name="height">Target window height.</param>
-		/// <param name="fontW">Target font width.</param>
-		/// <param name="fontH">Target font height.</param>
-		public ConsoleEngine(int width, int height, int fontW, int fontH) {
+        /// <summary> Creates a new ConsoleEngine. </summary>
+        /// <param name="width">Target window width.</param>
+        /// <param name="height">Target window height.</param>
+        /// <param name="fontW">Target font width.</param>
+        /// <param name="fontH">Target font height.</param>
+
+
+        public ConsoleEngine(int width, int height, int fontW, int fontH, short? sfontSize = null, string sfontName = null) 
+        {
 			if (width < 1 || height < 1) throw new ArgumentOutOfRangeException();
 			if (fontW < 1 || fontH < 1) throw new ArgumentOutOfRangeException();
 
 			Console.Title = "Untitled console application";
 			Console.CursorVisible = false;
 
-			// sätter fönstret och bufferns storlek
-			// buffern måste sättas efter fönsret, eftersom den aldrig får vara mindre än skärmen
-			Console.SetWindowSize(width, height);
-			Console.SetBufferSize(width, height);
+            // sätter fönstret och bufferns storlek
+            // buffern måste sättas efter fönsret, eftersom den aldrig får vara mindre än skärmen
+            //var test0 = new System.Drawing.Font("Consolas", 16);
+            //AWV:
+            if (!String.IsNullOrEmpty(sfontName) || sfontSize != null)
+            {
+                ////    if (String.IsNullOrEmpty(sfontName))
+                ////    {
+                ////        sfontName = _defaultFONTNAME;
+                ////    }
+                ////    if(sfontSize == null)
+                ////    {
+                ////        sfontSize = _defaultFONTSIZE;
+                ////    }
+                //GetFontInfo gfi = new GetFontInfo();
+                //IntPtr hnd = GetStdHandle(STD_OUTPUT_HANDLE);
+                //if (hnd != INVALID_HANDLE_VALUE)
+                //{
+                //    CONSOLE_FONT_INFO_EX ConsoleFontInfo = new CONSOLE_FONT_INFO_EX();
+                //    ConsoleFontInfo.cbSize = (uint)Marshal.SizeOf(ConsoleFontInfo);
+                //    bool tt = false;
+                //    // First determine whether there's already a TrueType font.
+                //    if (GetCurrentConsoleFontEx(hnd, false, ref ConsoleFontInfo))
+                //    {
 
-			ConsoleBuffer = new ConsoleBuffer(width, height);
+                //        tt = (ConsoleFontInfo.FontFamily & TMPF_TRUETYPE) == TMPF_TRUETYPE;
+                //        //if (tt)
+                //        //{
+                //        //    Console.WriteLine("The console already is using a TrueType font.");
+                //        //    return;
+                //        //}
+                //        // Set console font to Lucida Console.
+                //        CONSOLE_FONT_INFO_EX newInfo = new CONSOLE_FONT_INFO_EX();
+                //        newInfo.cbSize = (uint)Marshal.SizeOf(newInfo);
+                //        newInfo.FontFamily = TMPF_TRUETYPE;
+
+
+                //        if (String.IsNullOrEmpty(sfontName))
+                //        {
+                //            sfontName = gfi.GetFontName();
+                //        }
+                //            IntPtr ptr = new IntPtr(newInfo.FaceName);
+                //            Marshal.Copy(sfontName.ToCharArray(), 0, ptr, sfontName.Length);
+
+
+                //        if (sfontSize == null)
+                //        {
+                //            newInfo.dwFontSize = new Coord.COORD(ConsoleFontInfo.dwFontSize.X, ConsoleFontInfo.dwFontSize.Y);
+                //        }
+                //        else
+                //        {
+                //            var newFont = gfi.calcFontSize(sfontSize.Value);
+                //            newInfo.dwFontSize = new Coord.COORD(newFont.X, newFont.Y);
+                //        }
+                //        newInfo.FontWeight = ConsoleFontInfo.FontWeight;
+                //        SetCurrentConsoleFontEx(hnd, false, newInfo);
+                //    }
+                //}
+                //Above code got obsolate with PInvokeConsoleHelper Class and GetFontInfo Class
+                GetFontInfo gfi = new GetFontInfo();
+                if (String.IsNullOrEmpty(sfontName))
+                        sfontName = gfi.GetFontName();
+                if (sfontSize == null)
+                    sfontSize = gfi.GetFontSize();
+
+                PInvokeConsoleHelper.SetCurrentFont(sfontName, sfontSize.Value);
+            }
+
+                //try
+                //{
+                var test1 = Console.LargestWindowHeight;
+            var test2 = Console.LargestWindowWidth;
+            
+            Console.SetWindowSize(width, height);
+            
+            //}
+            //catch (ArgumentOutOfRangeException ex)
+            //{
+                //Console to big
+            //}
+            Console.SetBufferSize(width, height);
+
+
+            ConsoleBuffer = new ConsoleBuffer(width, height);
 
 			WindowSize = new Point(width, height);
 			FontSize = new Point(fontW, fontH);
@@ -65,8 +187,13 @@
 			ConsoleFont.SetFont(stdOutputHandle, (short)fontW, (short)fontH);
 		}
 
-		// Rita
-		private void SetPixel(Point selectedPoint, int color, char character) {
+        private string GetFontName()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Rita
+        private void SetPixel(Point selectedPoint, int color, char character) {
 			if (selectedPoint.X >= CharBuffer.GetLength(0) || selectedPoint.Y >= CharBuffer.GetLength(1)
 				|| selectedPoint.X < 0 || selectedPoint.Y < 0) return;
 

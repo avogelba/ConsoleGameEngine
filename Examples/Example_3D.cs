@@ -10,7 +10,8 @@ using ConsoleGameEngine;
 namespace ConsoleGameEngineExamples {
 	class Example3D : ConsoleGame {
 		static void Main(string[] args) {
-			new Example3D().Construct(256, 256, 2, 2, FramerateMode.Unlimited);
+		       //Why? I could not start the 3D example, I found out that I need a smaller font (I had Font Size 16)
+			new Example3D().Construct(256, 256, 2, 2, FramerateMode.Unlimited, 5);
 		}
 		readonly Random rand = new Random();
 
@@ -141,8 +142,8 @@ namespace ConsoleGameEngineExamples {
 			}
 
 			trianglesToRaster.Clear();
-
-			Engine.DisplayBuffer();
+            //Engine.WriteText(new Point(1, 12), "Press Del to Exit", 7);
+            Engine.DisplayBuffer();
 		}
 	}
 
@@ -245,8 +246,10 @@ namespace ConsoleGameEngineExamples {
 
 				if(line[0] == 'v') {
 					Vec3D v = new Vec3D();
-					string[] str = line.Replace('.', ',').Split();
-					v.x = float.Parse(str[1]);
+                    //AWV
+                    //string[] str = line.Replace('.', ',').Split();
+                    string[] str = line.Split();
+                    v.x = float.Parse(str[1]);
 					v.y = float.Parse(str[2]);
 					v.z = float.Parse(str[3]);
 					verts.Add(v);
